@@ -48,7 +48,7 @@ def bypass_paywall(url):
 
 @app.route("/")
 def main_page():
-    with open('app/index.html', 'r') as file:
+    with open('index.html', 'r') as file:
         html_content = file.read()
     return html_content
 

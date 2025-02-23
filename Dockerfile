@@ -21,6 +21,6 @@ LABEL org.opencontainers.image.licenses=MIT
 COPY . .
 RUN pip install -r requirements.txt
 WORKDIR /app
-EXPOSE 5000
+EXPOSE 5001
 ENTRYPOINT [ "python" ]
 CMD [ "portable.py" ] 
