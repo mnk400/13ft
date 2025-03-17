@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>13ft</title>
-    <link rel="icon" href="app/favicon.ico">
+    <title>so eepy</title>
+    <link rel="icon" href="favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -63,21 +63,25 @@
             background-color: var(--input-bg);
             border: 1px solid var(--input-border);
             border-radius: 6px;
-            width: 100%;
+            width: 20em;
             font-size: 1rem;
             box-sizing: border-box;
             color: var(--text-color);
             transition: border-color 0.2s ease;
         }
 
-        input[type="submit"] {
+        form {
+            width: 20em;
+        }
+
+        button {
             padding: 12px 20px;
             margin-top: 10px;
             background-color: var(--button-bg);
             color: #fff;
             border: 0px;
             border-radius: 8px;
-            width: 40%;
+            width: 60%;
             font-size: 1em;
             font-weight: 400;
             cursor: pointer;
@@ -88,9 +92,16 @@
             z-index: 1;
         }
 
-        input[type="submit"]:hover {
+        #archive-btn {
+                background-color: #4a6da7;
+        }
+
+        button:hover {
             background-color: var(--button-hover);
-            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        #archive-btn:hover {
+            background-color: #749ee2;
         }
 
         .dark-mode-toggle {
@@ -131,14 +142,6 @@
             border: 1px solid var(--input-border);
             color: var(--text-color);
         }
-
-        body.dark-mode input[type="submit"] {
-            background-color: var(--button-bg);
-        }
-
-        body.dark-mode input[type="submit"]:hover {
-            background-color: var(--button-hover);
-        }
     </style>
 </head>
 
@@ -146,15 +149,57 @@
     <div class="dark-mode-toggle">
         <i class="fas fa-moon dark-mode-icon" id="dark-mode-toggle" title="Toggle Dark Mode"></i>
     </div>
-    <form action="/article" method="post">
-        <h1>Enter Website Link</h1>
+    <form id="url-form">
+        <h1>Enter Website Link:  </h1>
         <input type="text" id="link" name="link" required autofocus>
-        <input type="submit" value="Submit">
+        <div>
+            <button type="button" id="submit-btn">Submit</button>
+            <br/>
+            <button type="button" id="archive-btn">Try Archive.is</button>
+        </div>
     </form>
 
     <script>
         const toggleIcon = document.getElementById('dark-mode-toggle');
         const currentTheme = localStorage.getItem('theme') || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        const mainInput = document.getElementById('link');
+        const submitBtn = document.getElementById('submit-btn');
+        const archiveBtn = document.getElementById('archive-btn');
+        const urlForm = document.getElementById('url-form');
+
+        submitBtn.addEventListener('click', function() {
+            if (mainInput.value.trim() !== '') {
+                const form = document.createElement('form');
+                form.method = 'post';
+                form.action = '/article';
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'link';
+                input.value = mainInput.value;
+                form.appendChild(input);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
+
+        archiveBtn.addEventListener('click', function() {
+            if (mainInput.value.trim() !== '') {
+                const form = document.createElement('form');
+                form.method = 'post';
+                form.action = '/archive';
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'link';
+                input.value = mainInput.value;
+                form.appendChild(input);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
+
+        urlForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+        });
 
         function setTheme(theme) {
             document.documentElement.setAttribute('data-theme', theme);

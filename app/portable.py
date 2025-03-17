@@ -45,12 +45,24 @@ def bypass_paywall(url):
     except requests.exceptions.RequestException as e:
         return bypass_paywall("http://" + url)
 
+def get_archive_is_url(url):
+    """
+    Get archive.is url for a given url
+    """
+    if not url.startswith("http"):
+        url = "https://" + url
+    archive_url = f"https://archive.is/{url}"
+    return archive_url
+
 
 @app.route("/")
 def main_page():
-    with open('index.html', 'r') as file:
-        html_content = file.read()
-    return html_content
+    return flask.send_from_directory(".", "index.html")
+
+
+@app.route("/favicon.ico")
+def get_favicon():
+    return flask.send_from_directory(".", "favicon.ico")
 
 
 @app.route("/article", methods=["POST"])
@@ -63,6 +75,11 @@ def show_article():
     except e:
         raise e
 
+@app.route("/archive", methods=["POST"])
+def show_archive():
+    link = flask.request.form["link"]
+    return flask.redirect(get_archive_is_url(link))
+
 
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>", methods=["GET"])
@@ -70,6 +87,10 @@ def get_article(path):
     full_url = request.url
     parts = full_url.split("/", 4)
     if len(parts) >= 5:
+        url_parts = parts[4].split("/")
+        if "archive" in url_parts[-1]:
+            actual_url = "https://" + "/".join(url_parts[1:-1]).lstrip("/")
+            return flask.redirect(get_archive_is_url(actual_url))
         actual_url = "https://" + parts[4].lstrip("/")
         try:
             return bypass_paywall(actual_url)
