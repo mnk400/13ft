@@ -54,6 +54,15 @@ def get_archive_is_url(url):
     archive_url = f"https://archive.is/{url}"
     return archive_url
 
+def get_wayback_url(url):
+    """
+    Get Wayback Machine url for a given url
+    """
+    if not url.startswith("http"):
+        url = "https://" + url
+    wayback_url = f"https://web.archive.org/web/{url}"
+    return wayback_url
+
 
 @app.route("/")
 def main_page():
@@ -80,6 +89,11 @@ def show_archive():
     link = flask.request.form["link"]
     return flask.redirect(get_archive_is_url(link))
 
+@app.route("/wayback", methods=["POST"])
+def show_wayback():
+    link = flask.request.form["link"]
+    return flask.redirect(get_wayback_url(link))
+
 
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>", methods=["GET"])
@@ -91,6 +105,9 @@ def get_article(path):
         if "archive" in url_parts[-1]:
             actual_url = "https://" + "/".join(url_parts[1:-1]).lstrip("/")
             return flask.redirect(get_archive_is_url(actual_url))
+        elif "wayback" in url_parts[-1]:
+            actual_url = "https://" + "/".join(url_parts[1:-1]).lstrip("/")
+            return flask.redirect(get_wayback_url(actual_url))
         actual_url = "https://" + parts[4].lstrip("/")
         try:
             return bypass_paywall(actual_url)

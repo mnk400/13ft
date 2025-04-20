@@ -63,7 +63,7 @@
             background-color: var(--input-bg);
             border: 1px solid var(--input-border);
             border-radius: 6px;
-            width: 20em;
+            width: 100%;
             font-size: 1rem;
             box-sizing: border-box;
             color: var(--text-color);
@@ -81,7 +81,8 @@
             color: #fff;
             border: 0px;
             border-radius: 8px;
-            width: 60%;
+            width: 100%;
+            text-align: left;
             font-size: 1em;
             font-weight: 400;
             cursor: pointer;
@@ -95,6 +96,10 @@
         #archive-btn {
                 background-color: #4a6da7;
         }
+        
+        #wayback-btn {
+                background-color: #559a65;
+        }
 
         button:hover {
             background-color: var(--button-hover);
@@ -102,6 +107,10 @@
 
         #archive-btn:hover {
             background-color: #749ee2;
+        }
+        
+        #wayback-btn:hover {
+            background-color: #7ec28e;
         }
 
         .dark-mode-toggle {
@@ -156,6 +165,8 @@
             <button type="button" id="submit-btn">Submit</button>
             <br/>
             <button type="button" id="archive-btn">Try Archive.is</button>
+            <br/>
+            <button type="button" id="wayback-btn">Try Wayback Machine</button>
         </div>
     </form>
 
@@ -165,6 +176,7 @@
         const mainInput = document.getElementById('link');
         const submitBtn = document.getElementById('submit-btn');
         const archiveBtn = document.getElementById('archive-btn');
+        const waybackBtn = document.getElementById('wayback-btn');
         const urlForm = document.getElementById('url-form');
 
         submitBtn.addEventListener('click', function() {
@@ -172,6 +184,8 @@
                 const form = document.createElement('form');
                 form.method = 'post';
                 form.action = '/article';
+                form.style.position = 'absolute';
+                form.style.visibility = 'hidden';
                 const input = document.createElement('input');
                 input.type = 'hidden';
                 input.name = 'link';
@@ -187,6 +201,25 @@
                 const form = document.createElement('form');
                 form.method = 'post';
                 form.action = '/archive';
+                form.style.position = 'absolute';
+                form.style.visibility = 'hidden';
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'link';
+                input.value = mainInput.value;
+                form.appendChild(input);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
+        
+        waybackBtn.addEventListener('click', function() {
+            if (mainInput.value.trim() !== '') {
+                const form = document.createElement('form');
+                form.method = 'post';
+                form.action = '/wayback';
+                form.style.position = 'absolute';
+                form.style.visibility = 'hidden';
                 const input = document.createElement('input');
                 input.type = 'hidden';
                 input.name = 'link';
